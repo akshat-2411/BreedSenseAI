@@ -1,26 +1,50 @@
-Alambadi Cow
-Amritmahal Cow
-Banni Buffalo
-Bargur Cow
-Dangi Cow
-Deoni Cow
-Gir Cow
-Hallikar Cow
-Jaffrabadi Buffalo
-Kangayam Cow
-Kankrej Cow
-Kasaragod Cow
-Kenkatha Cow
-Kherigarh Cow
-Malnad gidda Cow
-Mehsana Buffalo
-Nagori Cow
-Nagpuri Buffalo
-Nili ravi Buffalo
-Nimari Cow
-Pulikulam Cow
-Rathi Cow
-Sahiwal Cow
-Shurti Buffalo
-Tharparkar Cow
-Umblachery Cow
+Amritmahal
+Ayrshire
+Bargur
+Dangi
+Deoni
+Gir
+Hallikar
+Hariana
+Himachali Pahari
+Kangayam
+Kankrej
+Kenkatha
+Khariar
+Khillari
+Konkan Kapila
+Kosali
+Krishna_Valley
+Ladakhi
+Lakhimi
+Malnad_gidda
+Mewati
+Nari
+Nimari
+Ongole
+Poda Thirupu
+Pulikulam
+Punganur
+Purnea
+Rathi
+Red kandhari
+Red_Sindhi
+Sahiwal
+Shweta Kapila
+Tharparkar
+Umblachery
+Vechur
+bachaur
+badri
+bhelai
+dagri
+gangatari
+gaolao
+ghumsari
+kherigarh
+malvi
+motu
+nagori
+ponwar
+siri
+thutho

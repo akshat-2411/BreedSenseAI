@@ -1,0 +1,302 @@
+{
+  "Amritmahal": {
+    "origin": "Karnataka, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Grey coat fading to white, long tapering muzzle, narrow forehead, and long, sharp horns."
+  },
+  "Ayrshire": {
+    "origin": "Scotland (Exotic breed used in Indian crossbreeding)",
+    "milk_yield": "High",
+    "purpose": "Dairy",
+    "physical_characteristics": "Red and white markings, medium to large size, known for strong udder conformation."
+  },
+  "Bargur": {
+    "origin": "Tamil Nadu, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Brown body with white patterns, well-built and compact, known for stamina and speed."
+  },
+  "Dangi": {
+    "origin": "Maharashtra and Gujarat, India",
+    "milk_yield": "Low to Medium",
+    "purpose": "Draught",
+    "physical_characteristics": "Distinct white coat with red or black spots, exudes an oily secretion protecting from heavy rain."
+  },
+  "Deoni": {
+    "origin": "Maharashtra and Karnataka, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Mainly white with irregular black spots, prominent forehead, drooping ears."
+  },
+  "Gir": {
+    "origin": "Gujarat, India",
+    "milk_yield": "High",
+    "purpose": "Dairy",
+    "physical_characteristics": "Reddish color, prominent dome-shaped forehead, long pendulous ears folded like a leaf."
+  },
+  "Hallikar": {
+    "origin": "Karnataka, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "White to light grey coat, long horns sloping backward with an inward curve."
+  },
+  "Hariana": {
+    "origin": "Haryana, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "White or light grey coat, compact body, long and narrow face, well-developed hump."
+  },
+  "Himachali Pahari": {
+    "origin": "Himachal Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small to medium size, coat color varies including black, brown, and grey, adapted to hilly terrain."
+  },
+  "Kangayam": {
+    "origin": "Tamil Nadu, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Grey or white coat, dark forequarters and hindquarters in males, stout horns spreading apart."
+  },
+  "Kankrej": {
+    "origin": "Gujarat and Rajasthan, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Silver-grey to iron-grey coat, very large lyre-shaped horns, famous for unique gait called Sawai chal."
+  },
+  "Kenkatha": {
+    "origin": "Madhya Pradesh and Uttar Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small, compact body, greyish to copperish coat, short face, dark muzzle."
+  },
+  "Khariar": {
+    "origin": "Odisha, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Brownish or grey coat, short horns, small size but sturdy, well-adapted to local climate."
+  },
+  "Khillari": {
+    "origin": "Maharashtra and Karnataka, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Greyish white coat, long and tightly curved horns, fast runners with great endurance."
+  },
+  "Konkan Kapila": {
+    "origin": "Maharashtra and Goa, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Small to medium build, reddish to brownish coat, well-adapted to heavy rainfall regions."
+  },
+  "Kosali": {
+    "origin": "Chhattisgarh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small size, brownish or greyish coat, prominent horns, very active and suitable for plowing."
+  },
+  "Krishna_Valley": {
+    "origin": "Karnataka and Maharashtra, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Grey-white coat, massive built, broad and short forehead, short horns."
+  },
+  "Ladakhi": {
+    "origin": "Ladakh, India",
+    "milk_yield": "Low to Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Small size, black or brown coat, well-adapted to extreme cold and high altitude."
+  },
+  "Lakhimi": {
+    "origin": "Assam, India",
+    "milk_yield": "Low",
+    "purpose": "Dual",
+    "physical_characteristics": "Small size, variable coat color, suited for marshy land and heavy rainfall regions."
+  },
+  "Malnad_gidda": {
+    "origin": "Karnataka, India",
+    "milk_yield": "Low to Medium",
+    "purpose": "Dairy/Dual",
+    "physical_characteristics": "Dwarf breed, dark brown to black coat, disease-resistant, agile in forest terrain."
+  },
+  "Mewati": {
+    "origin": "Rajasthan, Haryana, and Uttar Pradesh, India",
+    "milk_yield": "Medium",
+    "purpose": "Draught",
+    "physical_characteristics": "Similar to Hariana but with a slightly more prominent forehead, generally white coat."
+  },
+  "Nari": {
+    "origin": "Rajasthan and Gujarat, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "White to greyish coat, distinctive long and curved horns, medium body size."
+  },
+  "Nimari": {
+    "origin": "Madhya Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Copper-red coat with large whitish patches splashing over the body, agile and hardy."
+  },
+  "Ongole": {
+    "origin": "Andhra Pradesh, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Large size, glossy white coat, prominent muscular hump, short stumpy horns."
+  },
+  "Poda Thirupu": {
+    "origin": "Telangana, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Brown and white patches, energetic draught animals, straight strong horns."
+  },
+  "Pulikulam": {
+    "origin": "Tamil Nadu, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Dark grey to black coat, sharply pointed horns, highly aggressive and agile (used in Jallikattu)."
+  },
+  "Punganur": {
+    "origin": "Andhra Pradesh, India",
+    "milk_yield": "Good relative to size",
+    "purpose": "Dairy",
+    "physical_characteristics": "Dwarf breed, white or light grey coat, short horns, one of the smallest cattle breeds globally."
+  },
+  "Purnea": {
+    "origin": "Bihar, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small to medium size, predominantly grey coat, used for agricultural operations."
+  },
+  "Rathi": {
+    "origin": "Rajasthan, India",
+    "milk_yield": "High",
+    "purpose": "Dairy",
+    "physical_characteristics": "Brown with white patches or solid brown, medium sized, docile nature, adaptable to arid regions."
+  },
+  "Red kandhari": {
+    "origin": "Maharashtra, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Deep red to dark brown coat color, broad and prominent forehead, strong built."
+  },
+  "Red_Sindhi": {
+    "origin": "Sindh (Pakistan) and Indian sub-continent",
+    "milk_yield": "High",
+    "purpose": "Dairy",
+    "physical_characteristics": "Deep red color, compact frame, thick horns emerging laterally, heavy udder."
+  },
+  "Sahiwal": {
+    "origin": "Punjab (India/Pakistan)",
+    "milk_yield": "High",
+    "purpose": "Dairy",
+    "physical_characteristics": "Reddish brown to pale red coat, loose skin, heavy hump, prominent dewlap, very heat tolerant."
+  },
+  "Shweta Kapila": {
+    "origin": "Goa, India",
+    "milk_yield": "Low to Medium",
+    "purpose": "Dairy",
+    "physical_characteristics": "Striking pure white coat, white skin, horns, hooves and muzzle. Short to medium stature."
+  },
+  "Tharparkar": {
+    "origin": "Rajasthan (India) and Sindh (Pakistan)",
+    "milk_yield": "High",
+    "purpose": "Dairy/Dual",
+    "physical_characteristics": "White or light grey coat, broad forehead, lyre-shaped horns, highly disease resistant."
+  },
+  "Umblachery": {
+    "origin": "Tamil Nadu, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Grey coat, white star on forehead, distinct white markings on the limbs and tail-switch."
+  },
+  "Vechur": {
+    "origin": "Kerala, India",
+    "milk_yield": "Medium (relative to size)",
+    "purpose": "Dairy/Dual",
+    "physical_characteristics": "Extremely small (dwarf) breed, light red, black or white coat, low feed requirements."
+  },
+  "bachaur": {
+    "origin": "Bihar, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Grey or light grey color, compact body, prominent but small hump, short horizontal ears."
+  },
+  "badri": {
+    "origin": "Uttarakhand, India",
+    "milk_yield": "Low",
+    "purpose": "Dairy/Dual",
+    "physical_characteristics": "Small hill cattle, black, brown, or red coat, sure-footed for hilly terrains."
+  },
+  "bhelai": {
+    "origin": "Haryana, India",
+    "milk_yield": "Low to Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "Mixed coat colors with white patches, migratory cattle, adapted to semi-arid ecosystems."
+  },
+  "dagri": {
+    "origin": "Gujarat and Rajasthan, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small built, predominantly white coat, primarily used by tribal communities for plowing."
+  },
+  "gangatari": {
+    "origin": "Uttar Pradesh and Bihar, India",
+    "milk_yield": "Good",
+    "purpose": "Dual",
+    "physical_characteristics": "White or grey coat, medium size, prominent hump, well-adapted to riverine plains."
+  },
+  "gaolao": {
+    "origin": "Maharashtra and Madhya Pradesh, India",
+    "milk_yield": "Medium",
+    "purpose": "Dual",
+    "physical_characteristics": "White coat, light and agile build, long and narrow face, backward curving horns."
+  },
+  "ghumsari": {
+    "origin": "Odisha, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small size, white or light grey coat, medium horns, hardy for draft work in hot climates."
+  },
+  "kherigarh": {
+    "origin": "Uttar Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "White coat, narrow face, large bright eyes, upstanding horns, energetic and active."
+  },
+  "malvi": {
+    "origin": "Madhya Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Grey to white coat, broad poll, strong and sturdy legs, ideal for hard agricultural work."
+  },
+  "motu": {
+    "origin": "Odisha, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Small, dwarf-like size, brownish or greyish coat, very hardy and thrives on poor pasture."
+  },
+  "nagori": {
+    "origin": "Rajasthan, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Large frame, white coat, long and narrow face, famous as fine swift trotters."
+  },
+  "ponwar": {
+    "origin": "Uttar Pradesh, India",
+    "milk_yield": "Low",
+    "purpose": "Draught",
+    "physical_characteristics": "Brown or black coat with distinct white spots, small but tightly knit body, active nature."
+  },
+  "siri": {
+    "origin": "Sikkim and West Bengal, India",
+    "milk_yield": "Medium",
+    "purpose": "Draught",
+    "physical_characteristics": "Thick coat of hair for cold protection, black and white or red and white coat, strong hump."
+  },
+  "thutho": {
+    "origin": "Nagaland, India",
+    "milk_yield": "Low",
+    "purpose": "Draught/Meat",
+    "physical_characteristics": "Medium to large size, mostly black or brown, robust frame suitable for hilly terrains."
+  }
+}

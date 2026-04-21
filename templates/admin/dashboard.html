@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard — BreedSense AI{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row min-h-[calc(100vh-64px)] bg-gray-950">
+    
+    <!-- ======= SIDEBAR ======= -->
+    <aside class="w-full md:w-64 bg-gray-900 border-r border-gray-800 flex-shrink-0">
+        <div class="p-6">
+            <h2 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Admin Panel</h2>
+            <nav class="space-y-1.5 flex flex-row md:flex-col overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+                <button onclick="switchTab('overview')" id="nav-overview" class="whitespace-nowrap flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-brand-400 bg-brand-600/10 hover:bg-brand-600/20 transition transition-colors">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+                </button>
+                <button onclick="switchTab('users')" id="nav-users" class="whitespace-nowrap flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition transition-colors">
+                    <i data-lucide="users" class="w-4 h-4"></i> User Management
+                </button>
+                <button onclick="switchTab('predictions')" id="nav-predictions" class="whitespace-nowrap flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition transition-colors">
+                    <i data-lucide="history" class="w-4 h-4"></i> All Predictions
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- ======= MAIN CONTENT AREA ======= -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+        
+        <!-- === OVERVIEW TAB === -->
+        <div id="tab-overview" class="block animate-fade-in space-y-8">
+            <div>
+                <h1 class="text-2xl font-bold text-white mb-6">Dashboard Overview</h1>
+                
+                <!-- Stats Summary Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Total Users</p>
+                            <p id="stat-users" class="text-2xl font-bold text-white">...</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i data-lucide="image" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">Total Processed</p>
+                            <p id="stat-predictions" class="text-2xl font-bold text-white">...</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                            <i data-lucide="activity" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-400">System Status</p>
+                            <p class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+                                <span class="relative flex h-3 w-3">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </span>
+                                Online
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NEW CHART SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Daily Usage Line Chart -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-4">Daily Usage (Last 30 Days)</h3>
+                    <div class="relative h-[250px] w-full">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Breed Frequency Doughnut Chart -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-4">Breed Distribution</h3>
+                    <div class="relative h-[250px] w-full flex justify-center">
+                        <canvas id="breedChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-white">Recent Activity</h2>
+                    <button onclick="loadDashboard()" class="text-sm text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                    </button>
+                </div>
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-950/50 text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold">User ID</th>
+                                    <th class="px-6 py-4 font-semibold">Breed Predicted</th>
+                                    <th class="px-6 py-4 font-semibold">Confidence</th>
+                                    <th class="px-6 py-4 font-semibold">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-activity-body" class="divide-y divide-gray-800/60 font-medium text-gray-200">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="recent-loading" class="p-8 text-center text-gray-500">
+                        <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-brand-500"></i>
+                        Loading recent activity...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- === USERS TAB === -->
+        <div id="tab-users" class="hidden animate-fade-in space-y-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-white">User Management</h1>
+                <button onclick="loadUsers()" class="btn-secondary flex items-center gap-2 px-3 py-1.5 text-sm rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-950/50 text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 font-semibold">Username</th>
+                                <th class="px-6 py-4 font-semibold">Email</th>
+                                <th class="px-6 py-4 font-semibold">Role</th>
+                                <th class="px-6 py-4 font-semibold">Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-body" class="divide-y divide-gray-800/60 font-medium text-gray-200">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="users-loading" class="p-8 text-center text-gray-500 hidden">
+                    <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-brand-500"></i>
+                    Loading users...
+                </div>
+            </div>
+        </div>
+
+        <!-- === ALL PREDICTIONS TAB === -->
+        <div id="tab-predictions" class="hidden animate-fade-in space-y-6">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-white">Prediction Records</h1>
+                <button onclick="loadDashboard()" class="btn-secondary flex items-center gap-2 px-3 py-1.5 text-sm rounded bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-950/50 text-gray-400 uppercase text-[10px] tracking-wider border-b border-gray-800">
+                            <tr>
+                                <th class="px-6 py-4 font-semibold">Image</th>
+                                <th class="px-6 py-4 font-semibold">User ID</th>
+                                <th class="px-6 py-4 font-semibold">Breed Predicted</th>
+                                <th class="px-6 py-4 font-semibold">Confidence</th>
+                                <th class="px-6 py-4 font-semibold">Date</th>
+                                <th class="px-6 py-4 font-semibold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-predictions-body" class="divide-y divide-gray-800/60 font-medium text-gray-200">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ======= DELETE CONFIRMATION MODAL ======= -->
+<div id="delete-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="relative w-full max-w-sm rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl animate-fade-in">
+        <div class="flex items-center gap-4 mb-4 text-red-400">
+            <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Delete Prediction?</h3>
+        </div>
+        <p class="text-sm text-gray-400 mb-6">This action cannot be undone. This prediction record will be permanently deleted from the database.</p>
+        <div class="flex items-center justify-end gap-3">
+            <button onclick="closeModal()" class="px-4 py-2 text-sm font-semibold rounded-lg text-gray-300 hover:bg-gray-800 transition">Cancel</button>
+            <button id="confirm-delete-btn" class="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-500 transition shadow-lg shadow-red-600/20 flex items-center gap-2">
+                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeInUp 0.4s ease-out forwards; }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // --- State ---
+    let currentDeleteId = null;
+    let usageChartInst = null;
+    let breedChartInst = null;
+
+    // --- Chart Logic ---
+    async function initCharts() {
+        try {
+            const res = await fetch('/admin/api/stats');
+            const data = await res.json();
+            
+            if (data.error) throw new Error(data.error);
+
+            // Usage Line Chart
+            if (usageChartInst) usageChartInst.destroy();
+            const ctx1 = document.getElementById('usageChart');
+            if (ctx1) {
+                usageChartInst = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily_usage.labels,
+                        datasets: [{
+                            label: 'Predictions',
+                            data: data.daily_usage.values,
+                            borderColor: '#10b981', // green for nature theme
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#10b981'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', precision: 0 } }
+                        }
+                    }
+                });
+            }
+
+            // Breed Doughnut Chart
+            if (breedChartInst) breedChartInst.destroy();
+            const ctx2 = document.getElementById('breedChart');
+            if (ctx2) {
+                breedChartInst = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.breed_distribution.labels,
+                        datasets: [{
+                            data: data.breed_distribution.values,
+                            // Dynamic Cattle Palette (Greens, Earth Browns, Accents)
+                            backgroundColor: [
+                                '#10b981', '#059669', // Emeralds
+                                '#b45309', '#d97706', '#f59e0b', '#fbbf24', // Ambers/Browns
+                                '#8b5cf6', '#6366f1' // Muted purples/indigos
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#111827' // match gray-900 background
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: { color: '#9ca3af', font: { size: 10 }, boxWidth: 12, padding: 15 }
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Failed to load charts:", e);
+        }
+    }
+
+    // --- Tab Switching logic ---
+    function switchTab(tabId) {
+        // Hide all tabs
+        ['overview', 'users', 'predictions'].forEach(id => {
+            document.getElementById(`tab-${id}`).classList.add('hidden');
+            document.getElementById(`tab-${id}`).classList.remove('block');
+            
+            // Reset Nav styling
+            const btn = document.getElementById(`nav-${id}`);
+            btn.className = "whitespace-nowrap flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition transition-colors";
+        });
+
+        // Show target tab
+        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        document.getElementById(`tab-${tabId}`).classList.add('block');
+        
+        // Active Nav styling
+        const activeBtn = document.getElementById(`nav-${tabId}`);
+        activeBtn.className = "whitespace-nowrap flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl text-brand-400 bg-brand-600/10 hover:bg-brand-600/20 transition transition-colors";
+
+        // Load data if needed
+        if (tabId === 'overview') loadDashboard();
+        if (tabId === 'predictions') loadDashboard();
+        if (tabId === 'users') loadUsers();
+    }
+
+    // --- Formatters ---
+    const formatDate = (isoString) => {
+        const d = new Date(isoString);
+        return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'});
+    };
+
+    const confColor = (val) => {
+        if(val >= 80) return "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/20";
+        if(val >= 50) return "text-yellow-400 bg-yellow-500/10 ring-1 ring-yellow-500/20";
+        return "text-red-400 bg-red-500/10 ring-1 ring-red-500/20";
+    };
+
+    // --- API Calls ---
+    async function loadDashboard() {
+        document.getElementById('recent-loading').classList.remove('hidden');
+        document.getElementById('recent-activity-body').innerHTML = '';
+        document.getElementById('all-predictions-body').innerHTML = '';
+
+        try {
+            const res = await fetch('/admin/dashboard');
+            const data = await res.json();
+            
+            // Update Stats
+            document.getElementById('stat-users').textContent = data.total_users || 0;
+            document.getElementById('stat-predictions').textContent = data.total_predictions || 0;
+
+            // Render Recent Table (Overview)
+            let rows = '';
+            let allRows = '';
+            
+            if (data.recent_activity && data.recent_activity.length > 0) {
+                data.recent_activity.forEach((p, index) => {
+                    // Truncate User ID for display
+                    const uid = p.user_id ? p.user_id.substring(0,8) + '...' : 'Guest';
+                    
+                    // Row for Overview
+                    if (index < 10) {
+                        rows += `<tr class="hover:bg-gray-800/30 transition">
+                            <td class="px-6 py-4 text-gray-400">${uid}</td>
+                            <td class="px-6 py-4 font-bold tracking-wide">${p.predicted_breed}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-0.5 rounded text-xs font-semibold ${confColor(p.confidence_score)}">${p.confidence_score}%</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-500 text-xs">${formatDate(p.timestamp)}</td>
+                        </tr>`;
+                    }
+                    
+                    // Row for All Predictions
+                    allRows += `<tr id="pred-row-${p._id}" class="hover:bg-gray-800/30 transition">
+                        <td class="px-6 py-3">
+                            <div class="h-10 w-10 rounded-lg overflow-hidden border border-gray-700 shadow shrink-0">
+                                <img src="/${p.image_path.replace(/\\/g, '/')}" class="w-full h-full object-cover">
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-400">${uid}</td>
+                        <td class="px-6 py-4 font-bold tracking-wide">${p.predicted_breed}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold ${confColor(p.confidence_score)}">${p.confidence_score}%</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-500 text-xs">${formatDate(p.timestamp)}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="openModal('${p._id}')" class="p-2 bg-gray-800 hover:bg-red-600 text-gray-400 hover:text-white rounded-lg transition shadow-sm" title="Delete">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+            } else {
+                rows = `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500 italic">No predictions made yet.</td></tr>`;
+                allRows = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500 italic">No predictions made yet.</td></tr>`;
+            }
+
+            document.getElementById('recent-activity-body').innerHTML = rows;
+            document.getElementById('all-predictions-body').innerHTML = allRows;
+            
+            // Trigger Chart Load
+            initCharts();
+            
+        } catch (err) {
+            console.error(err);
+        } finally {
+            document.getElementById('recent-loading').classList.add('hidden');
+            lucide.createIcons();
+        }
+    }
+
+    async function loadUsers() {
+        document.getElementById('users-loading').classList.remove('hidden');
+        document.getElementById('users-body').innerHTML = '';
+
+        try {
+            const res = await fetch('/admin/users');
+            const data = await res.json();
+            
+            let html = '';
+            if (data.users && data.users.length > 0) {
+                data.users.forEach(u => {
+                    const roleBadge = u.role === 'admin' 
+                        ? '<span class="px-2 py-0.5 rounded text-xs font-semibold text-purple-400 bg-purple-500/10 ring-1 ring-purple-500/20 shadow-sm shadow-black/10">Admin</span>'
+                        : '<span class="px-2 py-0.5 rounded text-xs font-semibold text-gray-400 bg-gray-500/10 ring-1 ring-gray-500/20 shadow-sm shadow-black/10">User</span>';
+
+                    html += `<tr class="hover:bg-gray-800/30 transition">
+                        <td class="px-6 py-4 font-bold flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-full bg-brand-600/20 text-brand-400 flex items-center justify-center shrink-0 uppercase text-xs">${u.username.charAt(0)}</div>
+                            ${u.username}
+                        </td>
+                        <td class="px-6 py-4 text-gray-400">${u.email}</td>
+                        <td class="px-6 py-4">${roleBadge}</td>
+                        <td class="px-6 py-4 text-gray-500 text-xs">${u.created_at ? formatDate(u.created_at) : 'Unknown'}</td>
+                    </tr>`;
+                });
+            } else {
+                html = `<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500 italic">No registered users found.</td></tr>`;
+            }
+            
+            document.getElementById('users-body').innerHTML = html;
+        } catch (err) {
+            console.error(err);
+        } finally {
+            document.getElementById('users-loading').classList.add('hidden');
+        }
+    }
+
+    // --- Delete Flow ---
+    function openModal(id) {
+        currentDeleteId = id;
+        document.getElementById('delete-modal').classList.remove('hidden');
+        document.getElementById('delete-modal').classList.add('flex');
+    }
+
+    function closeModal() {
+        currentDeleteId = null;
+        document.getElementById('delete-modal').classList.add('hidden');
+        document.getElementById('delete-modal').classList.remove('flex');
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+        if (!currentDeleteId) return;
+        
+        try {
+            const res = await fetch(`/admin/predictions/delete/${currentDeleteId}`, { method: 'DELETE' });
+            
+            if (res.ok) {
+                // Remove from DOM dynamically rather than full reload
+                const row = document.getElementById(`pred-row-${currentDeleteId}`);
+                if (row) row.remove();
+            } else {
+                alert('Deletion failed.');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('A network error occurred.');
+        } finally {
+            closeModal();
+            // Optional: refresh overview slightly silently
+            loadDashboard();
+        }
+    });
+
+    // --- On Mount ---
+    document.addEventListener("DOMContentLoaded", () => {
+        loadDashboard(); // Load default tab data
+    });
+</script>
+{% endblock %}

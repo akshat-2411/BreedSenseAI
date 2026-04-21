@@ -66,6 +66,7 @@ def register():
             "username": username,
             "email": email,
             "password_hash": password_hash,
+            "role": "user",
             "created_at": datetime.now(timezone.utc),
         })
 

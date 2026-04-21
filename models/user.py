@@ -1,40 +1,41 @@
-"""
-models/user.py — User model for Flask-Login
-============================================
-Wraps a MongoDB document to satisfy the Flask-Login UserMixin interface.
-"""
-
 from flask_login import UserMixin
-from bson import ObjectId
-
+from bson.objectid import ObjectId
 
 class User(UserMixin):
-    """Represents an authenticated user backed by a MongoDB document."""
+    """
+    User model class for authentication and database interactions.
+    """
+    def __init__(self, user_dict: dict):
+        self.id = str(user_dict.get("_id"))
+        self.username = user_dict.get("username")
+        self.email = user_dict.get("email")
+        self.password_hash = user_dict.get("password_hash")
+        self.role = user_dict.get("role", "user")
+        self.created_at = user_dict.get("created_at")
 
-    def __init__(self, user_data: dict):
-        self.id = str(user_data["_id"])
-        self.username = user_data["username"]
-        self.email = user_data["email"]
-        self.password_hash = user_data["password_hash"]
-        self.created_at = user_data.get("created_at")
+    def get_id(self):
+        return self.id
 
     @staticmethod
     def find_by_id(db, user_id: str):
-        """Look up a user by their MongoDB ObjectId string."""
         try:
-            data = db.users.find_one({"_id": ObjectId(user_id)})
+            user_dict = db.users.find_one({"_id": ObjectId(user_id)})
+            if user_dict:
+                return User(user_dict)
         except Exception:
-            return None
-        return User(data) if data else None
+            pass
+        return None
 
     @staticmethod
     def find_by_email(db, email: str):
-        """Look up a user by email address."""
-        data = db.users.find_one({"email": email.lower().strip()})
-        return User(data) if data else None
+        user_dict = db.users.find_one({"email": email})
+        if user_dict:
+            return User(user_dict)
+        return None
 
     @staticmethod
     def find_by_username(db, username: str):
-        """Look up a user by username."""
-        data = db.users.find_one({"username": username.strip()})
-        return User(data) if data else None
+        user_dict = db.users.find_one({"username": username})
+        if user_dict:
+            return User(user_dict)
+        return None

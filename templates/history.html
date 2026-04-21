@@ -59,6 +59,7 @@
                         <th class="px-6 py-4">Predicted Breed</th>
                         <th class="px-6 py-4">Confidence</th>
                         <th class="px-6 py-4">Date &amp; Time</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-800/60">
@@ -112,6 +113,15 @@
                         <!-- Timestamp -->
                         <td class="px-6 py-4 text-gray-400 text-xs whitespace-nowrap">
                             {{ pred.timestamp_display }}
+                        </td>
+                        
+                        <!-- Actions -->
+                        <td class="px-6 py-4 text-right">
+                            <a href="{{ url_for('predict.download_report', prediction_id=pred._id) }}"
+                               class="inline-flex p-2 items-center justify-center rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition hover:text-red-400 shadow-sm"
+                               title="Download PDF Report">
+                                <i data-lucide="file-down" class="h-4 w-4"></i>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

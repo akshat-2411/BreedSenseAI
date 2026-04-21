@@ -61,10 +61,12 @@ def create_app(config_name: str = None) -> Flask:
     from routes.main_routes import main_bp
     from routes.predict_routes import predict_bp
     from routes.auth_routes import auth_bp
+    from routes.admin_routes import admin_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(predict_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
 
     return app
 

@@ -1,11 +1,14 @@
 import os
 import uuid
 from datetime import datetime, timezone
-from flask import Blueprint, request, jsonify, current_app, url_for
+from flask import Blueprint, request, jsonify, current_app, url_for, send_file
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from bson.objectid import ObjectId
 from services.prediction_service import PredictionService
 from services.gradcam_service import generate_gradcam
+from services.report_service import generate_breed_report
+from utils.helpers import load_breed_info
 
 predict_bp = Blueprint("predict", __name__)
 
@@ -18,8 +21,8 @@ def _get_prediction_service() -> PredictionService:
     global _prediction_service
     if _prediction_service is None:
         _prediction_service = PredictionService(
-            model_path=current_app.config["MODEL_PATH"],
             num_classes=current_app.config["NUM_CLASSES"],
+            model_path=current_app.config["MODEL_PATH"],
         )
     return _prediction_service
 
@@ -67,6 +70,17 @@ def predict():
         )
         heatmap_url = url_for("static", filename=f"heatmaps/{heatmap_filename}")
 
+        # --- Fetch breed info ---
+        breed_info_data = load_breed_info()
+        breed_details = breed_info_data.get(result["breed"], {})
+        
+        info = {
+            "origin": breed_details.get("origin", "Unknown"),
+            "milk_yield": breed_details.get("milk_yield", "Unknown"),
+            "purpose": breed_details.get("purpose", "Unknown"),
+            "physical_characteristics": breed_details.get("physical_characteristics", "Unknown")
+        }
+
         # --- Store prediction record in MongoDB ---
         record = {
             "user_id": current_user.id,
@@ -78,13 +92,52 @@ def predict():
             "heatmap_filename": heatmap_filename,
             "timestamp": datetime.now(timezone.utc),
         }
-        current_app.db.predictions.insert_one(record)
+        inserted = current_app.db.predictions.insert_one(record)
 
-        return jsonify({**result, "heatmap_url": heatmap_url}), 200
+        return jsonify({**result, "heatmap_url": heatmap_url, "info": info, "prediction_id": str(inserted.inserted_id)}), 200
 
     except Exception as e:
         current_app.logger.error(f"Prediction failed: {e}")
         return jsonify({"error": "Prediction failed. Please try again."}), 500
 
 
+@predict_bp.route("/prediction/download/<prediction_id>", methods=["GET"])
+@login_required
+def download_report(prediction_id):
+    """Download a PDF report for a specific prediction."""
+    try:
+        pred_id = ObjectId(prediction_id)
+    except Exception:
+        return jsonify({"error": "Invalid prediction ID format."}), 400
 
+    record = current_app.db.predictions.find_one({"_id": pred_id})
+    if not record:
+        return jsonify({"error": "Prediction not found."}), 404
+
+    # Ensure the user owns the prediction or is an admin
+    if record.get("user_id") != current_user.id and current_user.role != "admin":
+        return jsonify({"error": "Access denied."}), 403
+
+    heatmap_filename = record.get("heatmap_filename")
+    heatmap_path = os.path.join("static", "heatmaps", heatmap_filename) if heatmap_filename else None
+
+    # Format the data for the report generator
+    prediction_data = {
+        "breed_name": record.get("predicted_breed", "Unknown"),
+        "confidence": record.get("confidence_score", 0),
+        "original_image_path": record.get("image_path"),
+        "heatmap_image_path": heatmap_path
+    }
+
+    try:
+        pdf_buffer = generate_breed_report(prediction_data)
+        
+        return send_file(
+            pdf_buffer,
+            download_name=f"BreedSense_Report_{prediction_id}.pdf",
+            as_attachment=True,
+            mimetype="application/pdf"
+        )
+    except Exception as e:
+        current_app.logger.error(f"Report generation failed: {e}")
+        return jsonify({"error": "Failed to generate report."}), 500

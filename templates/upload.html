@@ -6,9 +6,17 @@
 <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
 
     <!-- ======= PAGE HEADER ======= -->
-    <div class="text-center mb-10">
+    <div class="text-center mb-10 relative relative flex flex-col items-center">
+        <!-- Voice Toggle Settings -->
+        <div class="w-full flex justify-end mb-2 sm:absolute sm:right-0 sm:top-0 sm:block">
+            <button id="voice-toggle" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition shadow bg-gray-800/80 text-gray-300 border border-gray-700 hover:text-white hover:bg-gray-700" title="Toggle Voice Output">
+                <i id="voice-icon" data-lucide="volume-2" class="h-3.5 w-3.5"></i>
+                <span id="voice-label">Voice: ON</span>
+            </button>
+        </div>
+
         <span
-            class="inline-flex items-center gap-1.5 rounded-full bg-brand-600/10 px-3 py-1 text-xs font-semibold text-brand-400 ring-1 ring-brand-500/20 mb-4">
+            class="inline-flex items-center gap-1.5 rounded-full bg-brand-600/10 px-3 py-1 text-xs font-semibold text-brand-400 ring-1 ring-brand-500/20 mb-4 mt-2 sm:mt-0">
             <i data-lucide="scan-eye" class="h-3.5 w-3.5"></i> AI-Powered Analysis
         </span>
         <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
@@ -102,7 +110,12 @@
                 <!-- Breed badge -->
                 <div>
                     <p class="text-xs font-medium uppercase tracking-wider text-gray-500 mb-1">Predicted Breed</p>
-                    <p id="result-breed" class="text-2xl font-extrabold text-white"></p>
+                    <div class="flex items-center gap-3">
+                        <p id="result-breed" class="text-2xl font-extrabold text-white"></p>
+                        <button id="replay-voice-btn" class="hidden flex h-7 w-7 items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:bg-brand-600 hover:text-white transition shrink-0" title="Replay Announcement">
+                            <i data-lucide="volume-2" class="h-4 w-4"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Confidence bar -->
@@ -130,44 +143,64 @@
                     </div>
                 </div>
 
-                <!-- Try again -->
-                <button id="try-again-btn"
-                    class="mt-1 flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition">
-                    <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
-                    Try Another Image
-                </button>
+                <!-- Action Buttons -->
+                <div class="mt-1 flex flex-col sm:flex-row gap-3">
+                    <button id="try-again-btn"
+                        class="flex-1 flex items-center justify-center gap-2 rounded-xl border border-gray-700 bg-gray-800/50 px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition">
+                        <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+                        Try Another Image
+                    </button>
+                    <a id="download-pdf-btn" href="#"
+                        class="flex-1 flex items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-500/20 hover:text-red-300 transition shadow-sm">
+                        <i data-lucide="file-down" class="h-4 w-4"></i>
+                        Download PDF Rpt
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- ======= GRAD-CAM HEATMAP SECTION ======= -->
-        <div id="gradcam-section" class="hidden border-t border-gray-800">
-            <div class="px-6 py-4 bg-gray-900/80 flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/20">
-                    <i data-lucide="flame" class="h-4 w-4 text-orange-400"></i>
+        <!-- ======= EXTRA INFO: GRAD-CAM & BREED INFO ======= -->
+        <div id="extra-info-section" class="hidden border-t border-gray-800 grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-800">
+            
+            <!-- GRAD-CAM HEATMAP -->
+            <div id="gradcam-container" class="hidden flex-col h-full bg-gray-900/20">
+                <div class="px-6 py-4 bg-gray-900/80 flex items-center gap-2 border-b border-gray-800 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/20">
+                        <i data-lucide="flame" class="h-4 w-4 text-orange-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">Grad-CAM Explainability</h3>
+                        <p class="text-[11px] text-gray-500">Regions that influenced the prediction</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-white">Grad-CAM Explainability</h3>
-                    <p class="text-[11px] text-gray-500">Highlighted regions show which parts of the image influenced
-                        the prediction</p>
+                <div class="p-5 flex-1 flex flex-col justify-center">
+                    <div class="rounded-xl border border-gray-700 bg-gray-950 overflow-hidden shadow-inner">
+                        <img id="gradcam-image" src="" alt="Grad-CAM Heatmap" class="w-full object-contain" />
+                    </div>
+                    <!-- Legend -->
+                    <div class="flex flex-wrap items-center justify-center gap-3 mt-4 text-[11px] text-gray-500">
+                        <div class="flex items-center gap-1.5"><span class="inline-block h-2 w-4 rounded-sm bg-blue-600"></span> Low</div>
+                        <div class="flex items-center gap-1.5"><span class="inline-block h-2 w-4 rounded-sm bg-green-500"></span> Medium</div>
+                        <div class="flex items-center gap-1.5"><span class="inline-block h-2 w-4 rounded-sm bg-yellow-400"></span> High</div>
+                        <div class="flex items-center gap-1.5"><span class="inline-block h-2 w-4 rounded-sm bg-red-500"></span> Critical</div>
+                    </div>
                 </div>
             </div>
-            <div class="p-5">
-                <div class="rounded-xl border border-gray-700 bg-gray-950 overflow-hidden shadow-inner">
-                    <img id="gradcam-image" src="" alt="Grad-CAM Heatmap" class="w-full object-contain" />
+
+            <!-- BREED INFORMATION PANEL -->
+            <div id="breed-info-container" class="hidden flex-col h-full bg-gray-900/40">
+                <div class="px-6 py-4 bg-gray-900/80 flex items-center gap-2 border-b border-gray-800 shrink-0">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20">
+                        <i data-lucide="info" class="h-4 w-4 text-blue-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-white">Breed Information</h3>
+                        <p class="text-[11px] text-gray-500">Origin, purpose, and physical traits</p>
+                    </div>
                 </div>
-                <!-- Legend -->
-                <div class="flex items-center justify-center gap-4 mt-4 text-[11px] text-gray-500">
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-block h-2.5 w-5 rounded-sm bg-blue-600"></span> Low influence
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-block h-2.5 w-5 rounded-sm bg-green-500"></span> Medium
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-block h-2.5 w-5 rounded-sm bg-yellow-400"></span> High
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-block h-2.5 w-5 rounded-sm bg-red-500"></span> Critical
+                <div class="p-6 flex-1 flex flex-col justify-center">
+                    <div id="breed-info-content" class="space-y-4 animate-fade-in">
+                        <!-- Injected via JS -->
                     </div>
                 </div>
             </div>
@@ -203,6 +236,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/speech.js') }}"></script>
 <script>
     (() => {
         // ----- DOM refs -----
@@ -219,16 +253,48 @@
         const resultsSection = document.getElementById('results-section');
         const resultImage = document.getElementById('result-image');
         const resultBreed = document.getElementById('result-breed');
+        const replayVoiceBtn = document.getElementById('replay-voice-btn');
         const resultConfText = document.getElementById('result-confidence-text');
         const resultConfBar = document.getElementById('result-confidence-bar');
         const tryAgainBtn = document.getElementById('try-again-btn');
         const errorToast = document.getElementById('error-toast');
         const errorToastText = document.getElementById('error-toast-text');
-        // Grad-CAM elements
-        const gradcamSection = document.getElementById('gradcam-section');
+        // Extra info elements
+        const extraInfoSection = document.getElementById('extra-info-section');
+        const gradcamContainer = document.getElementById('gradcam-container');
         const gradcamImage = document.getElementById('gradcam-image');
+        const breedInfoContainer = document.getElementById('breed-info-container');
+        const breedInfoContent = document.getElementById('breed-info-content');
+        const voiceToggleBtn = document.getElementById('voice-toggle');
+        const voiceIcon = document.getElementById('voice-icon');
+        const voiceLabel = document.getElementById('voice-label');
 
         let selectedFile = null;
+
+        // ----- Voice Settings Logic -----
+        let voiceEnabled = localStorage.getItem('breedsense_voice') !== 'off';
+
+        function updateVoiceUI() {
+            if (voiceEnabled) {
+                voiceIcon.setAttribute('data-lucide', 'volume-2');
+                voiceLabel.textContent = 'Voice: ON';
+                voiceToggleBtn.classList.remove('text-red-400', 'border-red-500/30', 'bg-red-500/10');
+                voiceToggleBtn.classList.add('text-gray-300', 'border-gray-700', 'bg-gray-800/80');
+            } else {
+                voiceIcon.setAttribute('data-lucide', 'volume-x');
+                voiceLabel.textContent = 'Voice: MUTE';
+                voiceToggleBtn.classList.remove('text-gray-300', 'border-gray-700', 'bg-gray-800/80');
+                voiceToggleBtn.classList.add('text-red-400', 'border-red-500/30', 'bg-red-500/10');
+            }
+            lucide.createIcons();
+        }
+
+        voiceToggleBtn.addEventListener('click', () => {
+            voiceEnabled = !voiceEnabled;
+            localStorage.setItem('breedsense_voice', voiceEnabled ? 'on' : 'off');
+            updateVoiceUI();
+        });
+        updateVoiceUI(); // Init on load
 
         // ----- Helpers -----
         function showPreview(file) {
@@ -254,8 +320,14 @@
             dropIdle.classList.remove('hidden');
             predictBtn.disabled = true;
             resultsSection.classList.add('hidden');
-            gradcamSection.classList.add('hidden');
+            replayVoiceBtn.classList.add('hidden');
+            extraInfoSection.classList.add('hidden');
+            gradcamContainer.classList.add('hidden');
+            gradcamContainer.classList.remove('flex');
+            breedInfoContainer.classList.add('hidden');
+            breedInfoContainer.classList.remove('flex');
             gradcamImage.src = '';
+            breedInfoContent.innerHTML = '';
         }
 
         function showError(msg) {
@@ -325,6 +397,20 @@
                 resultImage.src = previewImage.src;
                 resultBreed.textContent = data.breed;
                 resultConfText.textContent = data.confidence + '%';
+                
+                // Inject Download link
+                const downloadBtn = document.getElementById('download-pdf-btn');
+                if (data.prediction_id && downloadBtn) {
+                    downloadBtn.href = '/api/prediction/download/' + data.prediction_id;
+                }
+
+                // Announce result via Voice Output (auto-play condition)
+                if (voiceEnabled && typeof speakPrediction === 'function') {
+                    speakPrediction(data.breed);
+                }
+
+                // Show Voice Replay button
+                replayVoiceBtn.classList.remove('hidden');
 
                 // Animate confidence bar
                 resultConfBar.style.width = '0%';
@@ -344,12 +430,70 @@
                     resultConfBar.className = resultConfBar.className.replace(/from-\S+\s+to-\S+/, 'from-red-500 to-red-400');
                 }
 
+                let hasExtraInfo = false;
+
                 // Show Grad-CAM heatmap if available
                 if (data.heatmap_url) {
                     gradcamImage.src = data.heatmap_url;
-                    gradcamSection.classList.remove('hidden');
+                    gradcamContainer.classList.remove('hidden');
+                    gradcamContainer.classList.add('flex');
+                    hasExtraInfo = true;
                 } else {
-                    gradcamSection.classList.add('hidden');
+                    gradcamContainer.classList.add('hidden');
+                    gradcamContainer.classList.remove('flex');
+                }
+
+                // Show Breed Info
+                if (data.info) {
+                    if (data.info.origin === "Unknown" && data.info.purpose === "Unknown") {
+                         breedInfoContent.innerHTML = `<div class="p-4 bg-gray-800/40 rounded-xl text-center border border-gray-700/50"><p class="text-gray-400 text-sm">Information currently unavailable.</p></div>`;
+                    } else {
+                         // Decide Purpose badge colour
+                         let purposeBadgeColor = 'bg-gray-500/20 text-gray-400 ring-1 ring-gray-500/20';
+                         if (data.info.purpose.includes('Dairy')) purposeBadgeColor = 'bg-green-500/20 text-green-400 ring-1 ring-green-500/20';
+                         else if (data.info.purpose.includes('Draught')) purposeBadgeColor = 'bg-orange-500/20 text-orange-400 ring-1 ring-orange-500/20';
+                         else if (data.info.purpose.includes('Dual')) purposeBadgeColor = 'bg-blue-500/20 text-blue-400 ring-1 ring-blue-500/20';
+                         else if (data.info.purpose.includes('Meat')) purposeBadgeColor = 'bg-red-500/20 text-red-400 ring-1 ring-red-500/20';
+                         
+                         // Decide Yield badge colour
+                         let yieldBadgeColor = 'bg-gray-500/20 text-gray-400 ring-1 ring-gray-500/20';
+                         if (data.info.milk_yield.includes('High') || data.info.milk_yield.includes('Good')) yieldBadgeColor = 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/20';
+                         else if (data.info.milk_yield.includes('Medium')) yieldBadgeColor = 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/20';
+                         else if (data.info.milk_yield.includes('Low')) yieldBadgeColor = 'bg-red-500/20 text-red-400 ring-1 ring-red-500/20';
+
+                         breedInfoContent.innerHTML = `
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-[11px] font-medium uppercase tracking-wider text-gray-500 mb-1.5 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Origin</p>
+                                    <p class="text-sm font-medium text-gray-200">${data.info.origin}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-medium uppercase tracking-wider text-gray-500 mb-1.5 flex items-center gap-1"><i data-lucide="target" class="w-3 h-3"></i> Purpose</p>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold ${purposeBadgeColor} shadow-sm shadow-black/10">${data.info.purpose}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-medium uppercase tracking-wider text-gray-500 mb-1.5 flex items-center gap-1"><i data-lucide="droplet" class="w-3 h-3"></i> Milk Yield</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold ${yieldBadgeColor} shadow-sm shadow-black/10">${data.info.milk_yield}</span>
+                            </div>
+                            <div class="bg-gray-800/30 p-4 rounded-xl border border-gray-700/50 mt-2">
+                                <p class="text-[11px] font-medium uppercase tracking-wider text-gray-500 mb-1.5 flex items-center gap-1"><i data-lucide="check-square" class="w-3 h-3"></i> Physical Characteristics</p>
+                                <p class="text-sm text-gray-300 leading-relaxed">${data.info.physical_characteristics}</p>
+                            </div>
+                         `;
+                    }
+                    breedInfoContainer.classList.remove('hidden');
+                    breedInfoContainer.classList.add('flex');
+                    hasExtraInfo = true;
+                } else {
+                    breedInfoContainer.classList.add('hidden');
+                    breedInfoContainer.classList.remove('flex');
+                }
+
+                if (hasExtraInfo) {
+                    extraInfoSection.classList.remove('hidden');
+                } else {
+                    extraInfoSection.classList.add('hidden');
                 }
 
                 // Re-init icons for new DOM
@@ -367,6 +511,13 @@
 
         // ----- Try Again -----
         tryAgainBtn.addEventListener('click', resetUpload);
+
+        // ----- Replay Voice -----
+        replayVoiceBtn.addEventListener('click', () => {
+            if (typeof speakPrediction === 'function' && resultBreed.textContent) {
+                speakPrediction(resultBreed.textContent);
+            }
+        });
 
         // Reinit Lucide icons
         lucide.createIcons();

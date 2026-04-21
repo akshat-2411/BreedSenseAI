@@ -10,6 +10,7 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "cattle_breed_db")
+    # Model
     MODEL_PATH = os.getenv("MODEL_PATH", "models/weights/best_model.pth")
     NUM_CLASSES = int(os.getenv("NUM_CLASSES", 50))
     UPLOAD_FOLDER = os.path.join("static", "uploads")
