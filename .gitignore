@@ -5,8 +5,8 @@ __pycache__/
 *.pyc
 
 # Model weights
-models/weights/*.pth
-models/weights/*.pt
+# models/weights/*.pth
+# models/weights/*.pt
 
 # IDE
 .vscode/
