@@ -12,6 +12,12 @@ import torchvision.transforms as transforms
 from torchvision.models import resnet18
 from PIL import Image
 
+# Limit CPU threads to prevent memory bloat on Render's free tier.
+# PyTorch by default spawns as many OpenMP threads as CPU cores,
+# which can exhaust RAM on constrained environments.
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
+
 
 class PredictionService:
     """ResNet-18 single-model prediction service."""
