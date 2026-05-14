@@ -19,11 +19,13 @@ import matplotlib
 matplotlib.use("Agg")                       # non-interactive backend
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-
-
 class GradCAM:
     """
     Generate Grad-CAM heatmaps for a given CNN model.
+
+    Uses torch.autograd.grad() instead of .backward() to avoid recursion
+    depth crashes in PyTorch's autograd engine on containerized environments
+    (e.g. Render with gunicorn workers).
 
     Parameters
     ----------
@@ -42,12 +44,10 @@ class GradCAM:
         self.device = device or torch.device("cpu")
 
         # Storage for hooked tensors
-        self._gradients: torch.Tensor | None = None
         self._activations: torch.Tensor | None = None
 
-        # Register forward and backward hooks on the target layer
+        # Register forward hook only — no backward hook needed with autograd.grad
         self._fwd_handle = target_layer.register_forward_hook(self._forward_hook)
-        self._bwd_handle = target_layer.register_full_backward_hook(self._backward_hook)
 
     # ------------------------------------------------------------------
     # Hooks
@@ -56,10 +56,6 @@ class GradCAM:
     def _forward_hook(self, module, input, output):
         """Capture activations."""
         self._activations = output
-
-    def _backward_hook(self, module, grad_input, grad_output):
-        """Capture gradients flowing into the target tensor."""
-        self._gradients = grad_output[0]
 
     # ------------------------------------------------------------------
     # Public API
@@ -85,19 +81,33 @@ class GradCAM:
         self.model.zero_grad()
         input_tensor = input_tensor.to(self.device).requires_grad_(True)
 
-        # Forward pass
+        # Forward pass — must be outside no_grad so the graph is retained
         output = self.model(input_tensor)                # [1, num_classes]
 
         if class_idx is None:
             class_idx = output.argmax(dim=1).item()
 
-        # Backward pass for the target class score
+        # Target class score
         target_score = output[0, class_idx]
-        target_score.backward()
 
-        # Grad-CAM computation
-        gradients = self._gradients                       # [1, C, h, w]
-        activations = self._activations                   # [1, C, h, w]
+        # Use autograd.grad instead of .backward() to avoid recursion depth issues
+        # This computes gradients w.r.t. activations directly without full graph traversal
+        gradients = torch.autograd.grad(
+            outputs=target_score,
+            inputs=self._activations,
+            retain_graph=False,
+            create_graph=False,
+            allow_unused=True,
+        )[0]
+
+        activations = self._activations.detach()
+
+        if gradients is None:
+            # Fallback: return blank heatmap if gradients are unavailable
+            h, w = activations.shape[2], activations.shape[3]
+            return np.zeros((h, w))
+
+        gradients = gradients.detach()
 
         # Global-average-pool the gradients → channel weights
         weights = gradients.mean(dim=(2, 3), keepdim=True)  # [1, C, 1, 1]
@@ -107,7 +117,7 @@ class GradCAM:
         cam = F.relu(cam)                                 # ReLU to keep positive
 
         # Normalise to [0, 1]
-        cam = cam.squeeze().detach().cpu().numpy()
+        cam = cam.squeeze().cpu().numpy()
         if cam.max() != cam.min():
             cam = (cam - cam.min()) / (cam.max() - cam.min())
         else:
@@ -119,8 +129,7 @@ class GradCAM:
         """Clean up registered hooks."""
         if hasattr(self, '_fwd_handle'):
             self._fwd_handle.remove()
-        if hasattr(self, '_bwd_handle'):
-            self._bwd_handle.remove()
+
 
 
 # ---------------------------------------------------------------------------
