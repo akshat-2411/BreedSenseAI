@@ -5,14 +5,19 @@ Entry point for the Flask web application.
 """
 
 import os
+import sys
 from flask import Flask
 from flask_cors import CORS
 from flask_login import LoginManager
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
+# Increase recursion depth for PyTorch backward pass on deployed environments
+sys.setrecursionlimit(10000)
+
 from config import Config, config_by_name
 from models.user import User
+
 
 # ---------------------------------------------------------------------------
 # Application Factory

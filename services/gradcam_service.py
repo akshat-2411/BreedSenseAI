@@ -45,22 +45,21 @@ class GradCAM:
         self._gradients: torch.Tensor | None = None
         self._activations: torch.Tensor | None = None
 
-        # Register forward hook only; backward hook will be attached to the tensor directly
+        # Register forward and backward hooks on the target layer
         self._fwd_handle = target_layer.register_forward_hook(self._forward_hook)
+        self._bwd_handle = target_layer.register_full_backward_hook(self._backward_hook)
 
     # ------------------------------------------------------------------
     # Hooks
     # ------------------------------------------------------------------
 
     def _forward_hook(self, module, input, output):
-        """Capture activations and register gradient hook on the tensor."""
+        """Capture activations."""
         self._activations = output
-        # Register a hook on the tensor itself, completely avoiding module backward hook bugs!
-        output.register_hook(self._tensor_backward_hook)
 
-    def _tensor_backward_hook(self, grad):
+    def _backward_hook(self, module, grad_input, grad_output):
         """Capture gradients flowing into the target tensor."""
-        self._gradients = grad
+        self._gradients = grad_output[0]
 
     # ------------------------------------------------------------------
     # Public API
@@ -120,6 +119,8 @@ class GradCAM:
         """Clean up registered hooks."""
         if hasattr(self, '_fwd_handle'):
             self._fwd_handle.remove()
+        if hasattr(self, '_bwd_handle'):
+            self._bwd_handle.remove()
 
 
 # ---------------------------------------------------------------------------
