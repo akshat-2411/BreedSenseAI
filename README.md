@@ -323,7 +323,6 @@ Full class list is located in `models/classes.txt`.
 | Variable | Default | Description |
 |---|---|---|
 | `SECRET_KEY` | `dev-secret-key` | Flask session signing key |
-| `MONGO_URI` | `mongodb://localhost:27017/` | MongoDB connection string |
 | `MONGO_DB_NAME` | `cattle_breed_db` | Target database name |
 | `MODEL_PATH` | `models/weights/best_model.pth` | Path to PyTorch weights file |
 | `NUM_CLASSES` | `50` | Number of output classes |
