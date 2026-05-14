@@ -58,22 +58,27 @@ def predict():
         service = _get_prediction_service()
         result = service.predict(filepath)
 
-        # --- Generate Grad-CAM heatmap ---
+        # --- Generate Grad-CAM heatmap (optional — fails gracefully) ---
         heatmap_dir = os.path.join("static", "heatmaps")
-        heatmap_filename = generate_gradcam(
-            model=service.model,
-            image_path=filepath,
-            transform=service.transform,
-            device=service.device,
-            save_dir=heatmap_dir,
-            class_idx=None,          # use predicted class
-        )
-        heatmap_url = url_for("static", filename=f"heatmaps/{heatmap_filename}")
+        heatmap_url = None
+        heatmap_filename = None
+        try:
+            heatmap_filename = generate_gradcam(
+                model=service.model,
+                image_path=filepath,
+                transform=service.transform,
+                device=service.device,
+                save_dir=heatmap_dir,
+                class_idx=None,          # use predicted class
+            )
+            heatmap_url = url_for("static", filename=f"heatmaps/{heatmap_filename}")
+        except Exception as heatmap_err:
+            current_app.logger.warning(f"Grad-CAM failed (non-critical): {heatmap_err}")
 
         # --- Fetch breed info ---
         breed_info_data = load_breed_info()
         breed_details = breed_info_data.get(result["breed"], {})
-        
+
         info = {
             "origin": breed_details.get("origin", "Unknown"),
             "milk_yield": breed_details.get("milk_yield", "Unknown"),
