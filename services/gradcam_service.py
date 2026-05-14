@@ -220,7 +220,7 @@ def generate_gradcam(model, image_path: str, transform, device, save_dir: str,
     """
     # Auto-detect the last conv layer
     if hasattr(model, "layer4"):                           # ResNet family
-        target_layer = model.layer4[-1]
+        target_layer = model.layer4[-1].conv2
     elif hasattr(model, "features"):                       # EfficientNet / MobileNet
         target_layer = model.features[-1]
     else:

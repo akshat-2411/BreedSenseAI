@@ -37,6 +37,11 @@ class PredictionService:
         in_features = model.fc.in_features
         model.fc = nn.Linear(in_features, self.num_classes)
 
+        # Disable inplace ReLUs to prevent recursion errors with backward hooks
+        for m in model.modules():
+            if isinstance(m, nn.ReLU):
+                m.inplace = False
+
         if os.path.exists(path):
             sd = torch.load(path, map_location=self.device)
             # Unwrap common checkpoint wrappers
