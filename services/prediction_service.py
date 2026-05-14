@@ -43,7 +43,7 @@ class PredictionService:
                 m.inplace = False
 
         if os.path.exists(path):
-            sd = torch.load(path, map_location=self.device)
+            sd = torch.load(path, map_location=torch.device('cpu'), weights_only=True)
             # Unwrap common checkpoint wrappers
             if isinstance(sd, dict):
                 for key in ("state_dict", "model_state_dict", "model"):
