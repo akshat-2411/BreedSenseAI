@@ -108,7 +108,7 @@ class GradCAM:
         cam = F.relu(cam)                                 # ReLU to keep positive
 
         # Normalise to [0, 1]
-        cam = cam.squeeze().cpu().numpy()
+        cam = cam.squeeze().detach().cpu().numpy()
         if cam.max() != cam.min():
             cam = (cam - cam.min()) / (cam.max() - cam.min())
         else:
